@@ -1,30 +1,30 @@
 "use client";
 
+import { useAppForm } from "@/hooks/form/useFormHooks";
 import { Form } from "@heroui/form";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { FormEvent, useRef, useState } from "react";
 import { Link } from "@heroui/link";
+import { Divider } from "@heroui/react";
 import NextLink from "next/link";
-import { Eye, EyeOff } from "lucide-react";
+import GoogleAuthButton from "../buttons/google-auth.button";
+import { signupScheme } from "./schemas";
 
 export default function SignUpForm() {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const name = formData.get("name") as string;
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    console.log({ name, email, password });
-    formRef.current?.reset();
-  };
-
-  const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = () => {
-    setIsVisible((val) => !val);
-  };
+  const form = useAppForm({
+    defaultValues: {
+      email: "",
+      name: "",
+      password: "",
+    },
+    validators: {
+      onSubmit: signupScheme,
+    },
+    onSubmit: async ({ value, formApi }) => {
+      console.log("submitting...");
+      await new Promise((res) => setTimeout(res, 2000));
+      console.log({ value });
+      formApi.reset();
+    },
+  });
 
   return (
     <fieldset
@@ -35,61 +35,38 @@ export default function SignUpForm() {
         <h1 className="text-3xl font-bold">Sign Up</h1>
         <h2 className="leading-loose text-sm">Create your new account</h2>
       </div>
-      <Form ref={formRef} className="space-y-2" onSubmit={handleSubmit}>
-        <Input
-          errorMessage="Invalid Name"
-          label="Name"
-          labelPlacement="outside"
+      <Form
+        className="space-y-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+      >
+        <form.AppField
           name="name"
-          placeholder="John Doe"
-          type="text"
+          children={(field) => <field.TextField label="Name" />}
         />
-        <Input
-          errorMessage="Invalid email"
-          label="Email"
-          labelPlacement="outside"
+
+        <form.AppField
           name="email"
-          placeholder="mail@mail.com"
-          type="email"
+          children={(field) => <field.TextField label="Email" />}
         />
-        <Input
-          errorMessage="Invalid Password"
-          label="Password"
-          labelPlacement="outside"
+
+        <form.AppField
           name="password"
-          placeholder="*********"
-          type={isVisible ? "text" : "password"}
-          endContent={
-            <button
-              aria-label="toggle password visibility"
-              className="focus:outline-solid outline-transparent"
-              onClick={toggleVisibility}
-              type="button"
-            >
-              {isVisible ? <EyeOff /> : <Eye />}
-            </button>
-          }
+          children={(field) => <field.PasswordField />}
         />
+
         <div className="mb-4 w-full space-y-2">
-          <Button
-            isLoading={false}
-            type="submit"
-            fullWidth
-            variant="solid"
-            color="primary"
-          >
-            Sign up
-          </Button>
-          <Button
-            isLoading={false}
-            type="button"
-            fullWidth
-            variant="flat"
-            color="warning"
-          >
-            Continue with google
-          </Button>
+          <form.AppForm>
+            <form.SubmitButton label="Signup" />
+          </form.AppForm>
+          <Divider className="mt-2 mb-4" orientation="horizontal" />
+
+          <GoogleAuthButton />
         </div>
+
         <div className="flex items-center justify-center w-full">
           <p className="text-sm">
             <span className="pr-1">Already have an account?</span>

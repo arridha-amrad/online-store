@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "../global.css";
+import { Geist, Lato } from "next/font/google";
 import { UiProvider } from "@/providers/ui-provider";
+import "../global.css";
 
-const font = Inter({
+const font = Lato({
   subsets: ["latin"],
+  weight: "700",
+  variable: "--font-product",
+});
+
+const font2 = Geist({
+  subsets: ["latin"],
+  style: "normal",
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -19,7 +27,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${font.className} antialiased`}>
+      <body className={`${font.variable} ${font2.className} antialiased`}>
         <UiProvider>{children}</UiProvider>
       </body>
     </html>

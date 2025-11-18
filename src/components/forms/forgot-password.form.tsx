@@ -1,22 +1,25 @@
 "use client";
 
-import { Button } from "@heroui/button";
+import { useAppForm } from "@/hooks/form/useFormHooks";
 import { Form } from "@heroui/form";
-import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { FormEvent, useRef } from "react";
+import { forgotPasswordSchema } from "./schemas";
 
 export default function ForgotPasswordForm() {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const email = formData.get("email") as string;
-    console.log({ email });
-    formRef.current?.reset();
-  };
+  const form = useAppForm({
+    defaultValues: {
+      email: "",
+    },
+    validators: {
+      onSubmit: forgotPasswordSchema,
+    },
+    onSubmit: async ({ value, formApi }) => {
+      await new Promise((res) => setTimeout(res, 2000));
+      console.log({ value });
+      formApi.reset();
+    },
+  });
 
   return (
     <fieldset
@@ -27,27 +30,25 @@ export default function ForgotPasswordForm() {
         <h1 className="text-3xl leading-relaxed font-bold">Forgot Password</h1>
         <h2 className="leading-loose text-sm">Don't worry it's easy</h2>
       </div>
-      <Form ref={formRef} className="space-y-2" onSubmit={handleSubmit}>
-        <Input
-          errorMessage="Invalid email"
-          description="Please enter you registered email"
-          label="Email"
-          labelPlacement="outside"
+      <Form
+        className="space-y-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+      >
+        <form.AppField
           name="email"
-          placeholder="mail@mail.com"
-          type="email"
+          children={(field) => <field.TextField label="Email" />}
         />
+
         <div className="mb-4 w-full space-y-2">
-          <Button
-            isLoading={false}
-            type="submit"
-            fullWidth
-            variant="solid"
-            color="primary"
-          >
-            Submit
-          </Button>
+          <form.AppForm>
+            <form.SubmitButton label="Submit" />
+          </form.AppForm>
         </div>
+
         <div className="flex items-center justify-center w-full">
           <p className="text-sm">
             <span className="pr-1">Back to </span>

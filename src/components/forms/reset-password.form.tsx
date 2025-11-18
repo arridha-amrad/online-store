@@ -1,23 +1,26 @@
 "use client";
 
-import { Button } from "@heroui/button";
+import { useAppForm } from "@/hooks/form/useFormHooks";
 import { Form } from "@heroui/form";
-import { Input } from "@heroui/input";
 import { Link } from "@heroui/link";
 import NextLink from "next/link";
-import { FormEvent, useRef } from "react";
+import { resetPasswordSchema } from "./schemas";
 
 export default function ResetPasswordForm() {
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const password = formData.get("password") as string;
-    const confirmPassword = formData.get("confirmPassword") as string;
-    console.log({ confirmPassword, password });
-    formRef.current?.reset();
-  };
+  const form = useAppForm({
+    defaultValues: {
+      password: "",
+      confirmPassword: "",
+    },
+    validators: {
+      onSubmit: resetPasswordSchema,
+    },
+    onSubmit: async ({ value, formApi }) => {
+      await new Promise((res) => setTimeout(res, 2000));
+      console.log({ value });
+      formApi.reset();
+    },
+  });
 
   return (
     <fieldset
@@ -27,34 +30,29 @@ export default function ResetPasswordForm() {
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold">Reset Password</h1>
       </div>
-      <Form ref={formRef} className="space-y-2" onSubmit={handleSubmit}>
-        <Input
-          errorMessage="Invalid Password"
-          label="Password"
-          labelPlacement="outside"
+      <Form
+        className="space-y-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
+      >
+        <form.AppField
           name="password"
-          placeholder="*********"
-          type="password"
+          children={(field) => <field.PasswordField />}
         />
-        <Input
-          errorMessage="Invalid Password"
-          label="Confirm Password"
-          labelPlacement="outside"
+        <form.AppField
           name="confirmPassword"
-          placeholder="*********"
-          type="password"
+          children={(field) => <field.PasswordField />}
         />
+
         <div className="mb-4 w-full space-y-2">
-          <Button
-            isLoading={false}
-            type="submit"
-            fullWidth
-            variant="solid"
-            color="primary"
-          >
-            Reset Password
-          </Button>
+          <form.AppForm>
+            <form.SubmitButton label="Reset Password" />
+          </form.AppForm>
         </div>
+
         <div className="flex items-center justify-center w-full">
           <p className="text-sm">
             <span className="pr-1">Back to</span>
