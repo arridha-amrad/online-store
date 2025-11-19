@@ -32,3 +32,10 @@ export const resetPasswordSchema = z
 export const forgotPasswordSchema = z.object({
   email: z.email(),
 });
+
+export const shippingSchema = z.object({
+  provinceId: z.string().min(1, "province is required"),
+  cityId: z.string().min(1, "city is required"),
+  districtId: z.string().min(1, "district is required"),
+  address: z.string().min(1, "address is required"),
+});

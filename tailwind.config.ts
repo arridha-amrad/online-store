@@ -3,8 +3,8 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: [
-    "./node_modules/@heroui/theme/dist/components/(button|card|chip|divider|form|input|link|ripple|spinner).js",
-  ],
+    "./node_modules/@heroui/theme/dist/components/(button|card|chip|divider|dropdown|form|input|link|modal|navbar|radio|select|ripple|spinner|menu|popover|listbox|scroll-shadow).js"
+],
   theme: {
     extend: {},
   },
