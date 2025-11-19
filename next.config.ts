@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         hostname: "www.static-src.com",
         protocol: "https",
       },
+      {
+        hostname: "i.pravatar.cc",
+        protocol: "https",
+      },
     ],
   },
 };
