@@ -2,13 +2,13 @@
 
 import { Button } from "@heroui/button";
 import { Input } from "@heroui/input";
-import { Link } from "@heroui/link";
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@heroui/navbar";
 import { Divider } from "@heroui/react";
-import { Grip, Search, Sun } from "lucide-react";
+import { Search } from "lucide-react";
 
-import NextLink from "next/link";
+import ThemeButton from "./buttons/theme.button";
 import CategoriesDropDown from "./dropdowns/categories.dd";
+import Link from "next/link";
 
 const AcmeLogo = () => {
   return (
@@ -25,16 +25,21 @@ const AcmeLogo = () => {
 
 export default function AppNavbar() {
   return (
-    <Navbar>
+    <Navbar isBordered>
       <NavbarBrand>
         <AcmeLogo />
-        <p className="font-bold text-inherit">devMart</p>
+        <p className="font-bold text-inherit">DEVMART</p>
       </NavbarBrand>
       <NavbarContent
         as="div"
         className="hidden flex-3 sm:flex gap-4"
         justify="center"
       >
+        <NavbarItem>
+          <Button variant="light" as={Link} href="/">
+            Shops
+          </Button>
+        </NavbarItem>
         <NavbarItem>
           <CategoriesDropDown />
         </NavbarItem>
@@ -48,17 +53,12 @@ export default function AppNavbar() {
 
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Button href="/signin" variant="light">
+          <Button as={Link} href="/signin" variant="light">
             Login
           </Button>
         </NavbarItem>
-        <div className="h-full py-3">
-          <Divider orientation="vertical" />
-        </div>
         <NavbarItem>
-          <Button isIconOnly>
-            <Sun />
-          </Button>
+          <ThemeButton />
         </NavbarItem>
       </NavbarContent>
     </Navbar>
